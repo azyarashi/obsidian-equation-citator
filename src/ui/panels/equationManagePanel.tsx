@@ -1,4 +1,4 @@
-import { ItemView, WorkspaceLeaf, setIcon, setTooltip, MarkdownRenderer, Notice, MarkdownView, TFile } from "obsidian";
+import { ItemView, WorkspaceLeaf, setIcon, setTooltip, Notice, MarkdownView, TFile, loadMathJax } from "obsidian";
 import EquationCitator from "@/main";
 import { EquationMatch } from "@/utils/parsers/equation_parser";
 import { hashEquations } from "@/utils/misc/hash_utils";
@@ -1130,16 +1130,10 @@ export class EquationArrangePanel extends ItemView {
         // Render the equation using MathJax or Obsidian's renderer
         const mathDiv = contentDiv.createDiv("ec-equation-math");
 
-        // Use Obsidian's markdown renderer to render the equation
-        const equationMd = `$$\n${equation.content}\n$$`;
+        // Render the equation
         const currentFile = this.app.workspace.getActiveFile();
-        await MarkdownRenderer.render(
-            this.plugin.app,
-            equationMd,
-            mathDiv,
-            currentFile?.path || "",
-            this
-        );
+        if (!window.MathJax) await loadMathJax();
+        mathDiv.replaceChildren(window.MathJax!.tex2chtml(equation.content, { display: true }));
 
         // Add click handler to jump to equation in the editor
         // Ctrl/Cmd + double click always creates new panel on right

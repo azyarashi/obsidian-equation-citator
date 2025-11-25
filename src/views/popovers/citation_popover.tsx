@@ -1,7 +1,6 @@
-import { Notice, WorkspaceLeaf } from "obsidian";
+import { loadMathJax, Notice, WorkspaceLeaf } from "obsidian";
 import EquationCitator from "@/main";
 import {
-    MarkdownRenderer,
     Component,
     HoverPopover,
     HoverParent,
@@ -145,14 +144,9 @@ export async function renderEquationWrapper(
     const equationDiv = equationWrapper.createDiv();
     equationDiv.addClass("em-equation-content");
 
-    // Render the markdown equation
-    await MarkdownRenderer.render(
-        plugin.app,
-        eq.md,
-        equationDiv,
-        sourcePath,
-        targetComponent
-    );
+    // Render the equation
+    if (!window.MathJax) await loadMathJax();
+    equationDiv.replaceChildren(window.MathJax!.tex2chtml(eq.md.slice(2, -2), { display: true }));
     // Add click effects to each equation
     addClickEffects(equationWrapper);
     if (addLinkJump) {
