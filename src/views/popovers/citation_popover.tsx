@@ -147,7 +147,7 @@ export async function renderEquationWrapper(
 
     // Render the equation
     if (!window.MathJax) await loadMathJax();
-    const eqTag = parseEquationTag(eq.tag);
+    const eqTag = parseEquationTag(eq.md);
     equationDiv.replaceChildren(window.MathJax!.tex2chtml(eqTag.content, { display: true }));
     // Add click effects to each equation
     addClickEffects(equationWrapper);
