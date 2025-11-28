@@ -1,0 +1,31 @@
+name: Continuous Integration
+on: [workflow_dispatch]
+
+env:
+  TEST_REPO: FRIEDparrot/obsidian-equation-citator-test
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Checkout tests
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.TEST_REPO }}
+          path: src/tests
+
+      - name: Use Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Check
+        run: bunx jest
+      
+      - name: Build
+        run: bun esbuild.config.mjs production
