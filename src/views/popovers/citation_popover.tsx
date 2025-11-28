@@ -17,6 +17,7 @@ export class TargetElComponent extends Component {
 import { RenderedEquation } from "@/services/equation_services";
 import { getLeafByElement } from "@/utils/workspace/workspace_utils";
 import { openFileAndScrollToEquation } from "@/utils/workspace/equation_navigation";
+import { parseEquationTag } from "@/utils/parsers/equation_parser";
 
 /**
  * Citaton Popover Class, render the equations in the popover 
@@ -146,7 +147,8 @@ export async function renderEquationWrapper(
 
     // Render the equation
     if (!window.MathJax) await loadMathJax();
-    equationDiv.replaceChildren(window.MathJax!.tex2chtml(eq.md.slice(2, -2), { display: true }));
+    const eqTag = parseEquationTag(eq.tag);
+    equationDiv.replaceChildren(window.MathJax!.tex2chtml(eqTag.content, { display: true }));
     // Add click effects to each equation
     addClickEffects(equationWrapper);
     if (addLinkJump) {
